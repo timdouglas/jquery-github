@@ -3,7 +3,9 @@
 	var pluginName = "github",
 			document   = window.document,
 			defaults   = {
-				propertyName: "value"
+				propertyName: "value",
+				username: null,
+				elClass: "github-box-wrap"
 			};
 
 	function Plugin( element, options ) {
@@ -37,9 +39,19 @@
 	// Apply results to HTML template
 	Plugin.prototype.applyTemplate = function ( repo ) {
 		var self  = this,
-				$widget = self.parseTemplate( repo );
+				$widget;
 
-		$widget.appendTo( self.$container );
+		if ( Array.isArray( repo ) === true ) {
+			repo.forEach( function(r) {
+				var $repo = $( $.parseHTML( "<div data-repo='" + self.options.username + "/" + r.name + "' class='" + self.options.elClass + "'></div>" ) );
+				$repo.appendTo( self.$container );
+				$widget = self.parseTemplate( r );
+				$widget.appendTo( $repo );
+			});
+		} else {
+			$widget = self.parseTemplate( repo );
+			$widget.appendTo( self.$container );
+		}
 	};
 
 	// Stores repostories in sessionStorage if available
@@ -125,10 +137,15 @@
 
 	// Request repositories from Github
 	Plugin.prototype.requestData = function ( repo ) {
-		var self = this;
+		var self = this,
+			url = "https://api.github.com/repos/" + repo;
+
+		if ( self.options.username !== null ) {
+			url = "https://api.github.com/users/" + self.options.username + "/repos";
+		}
 
 		$.ajax({
-			url: "https://api.github.com/repos/" + repo,
+			url: url,
 			dataType: "jsonp",
 			success: function( results ) {
 				var result_data = results.data;
