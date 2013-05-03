@@ -33,6 +33,16 @@ And that's it \o/
 
 [Check full example's source code](https://github.com/zenorocha/jquery-github/blob/master/demo/index.html).
 
+## Extra
+
+Added functionality to fetch and display all repos for a user, to do so just call the plugin on the container and pass it a github username as part of its options object:
+
+```javascript
+$('.container').github( { username: 'timdouglas' } );
+```
+
+This will create all the divs automatically for you, if you want to give them extra classes, pass the elClass option with the username.
+
 ## Showcase
 
 * [zenorocha.com/projects](http://zenorocha.com/projects/)
